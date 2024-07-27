@@ -7,6 +7,7 @@
   "dependencies": {
     "@hono-rate-limiter/cloudflare": "^0.1.2",
     "@hono/zod-validator": "^0.2.2",
+    "@spotify/web-api-ts-sdk": "^1.2.0",
     "hono": "^4.5.1",
     "hono-rate-limiter": "^0.4.0",
     "zod": "^3.23.8"

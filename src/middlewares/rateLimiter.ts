@@ -6,4 +6,5 @@ export const rateLimiter = factory.createMiddleware(async (c, next) => {
     rateLimitBinding: c.env.RATE_LIMITER,
     keyGenerator: (c) => c.req.header("cf-connecting-ip") ?? "", // Method to generate custom identifiers for clients.
   })(c, next);
+  await next();
 });

@@ -1,12 +1,14 @@
 import { RateLimitBinding } from "@hono-rate-limiter/cloudflare";
 import { createFactory } from "hono/factory";
 
-type AppType = {
+export type AppType = {
   Variables: {
     rateLimit: boolean;
   };
   Bindings: {
     RATE_LIMITER: RateLimitBinding;
+    SPOTIFY_CLIENT_ID: string;
+    SPOTIFY_CLIENT_SECRET: string;
   };
 };
 

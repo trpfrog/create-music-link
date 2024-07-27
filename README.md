@@ -6,6 +6,8 @@ https://create-music-link.trpfrog.workers.dev
 
 ## API
 
+### GET /v1/tweet
+
 ### POST /v1
 
 #### Request
