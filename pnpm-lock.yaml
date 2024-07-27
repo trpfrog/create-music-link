@@ -8,12 +8,18 @@ importers:
 
   .:
     dependencies:
+      '@hono-rate-limiter/cloudflare':
+        specifier: ^0.1.2
+        version: 0.1.2(hono@4.5.1)
       '@hono/zod-validator':
         specifier: ^0.2.2
         version: 0.2.2(hono@4.5.1)(zod@3.23.8)
       hono:
         specifier: ^4.5.1
         version: 4.5.1
+      hono-rate-limiter:
+        specifier: ^0.4.0
+        version: 0.4.0(hono@4.5.1)
       zod:
         specifier: ^3.23.8
         version: 3.23.8
@@ -214,6 +220,11 @@ packages:
     resolution: {integrity: sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA==}
     engines: {node: '>=14'}
 
+  '@hono-rate-limiter/cloudflare@0.1.2':
+    resolution: {integrity: sha512-s0eTlzY+7AI6oHoToAVkRiCZmS9hxnuVe1f+4zQ2iq+wsoWNOla+dIrdwFezNeBwuMBRFnhoNSw8DeNNijAydw==}
+    peerDependencies:
+      hono: ^4.4.8
+
   '@hono/zod-validator@0.2.2':
     resolution: {integrity: sha512-dSDxaPV70Py8wuIU2QNpoVEIOSzSXZ/6/B/h4xA7eOMz7+AarKTSGV8E6QwrdcCbBLkpqfJ4Q2TmBO0eP1tCBQ==}
     peerDependencies:
@@ -337,6 +348,11 @@ packages:
   hasown@2.0.2:
     resolution: {integrity: sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==}
     engines: {node: '>= 0.4'}
+
+  hono-rate-limiter@0.4.0:
+    resolution: {integrity: sha512-7RWU2HZvxPtfBrvjXKDiQ3F6ZH8k49JhxVkHquUz5UZKjauj5PrP29MvISykThtfpy4mGG6kqxFBHW1ed9wwnA==}
+    peerDependencies:
+      hono: ^4.1.1
 
   hono@4.5.1:
     resolution: {integrity: sha512-6q8AugoWG5wlrjdGG8OFFiqEsPlPGjODjUik48sEJeko4Tae1UsLS2vUiYHLEJx1gJvOZa4BWkQC+urwDmkEvQ==}
@@ -620,6 +636,10 @@ snapshots:
 
   '@fastify/busboy@2.1.1': {}
 
+  '@hono-rate-limiter/cloudflare@0.1.2(hono@4.5.1)':
+    dependencies:
+      hono: 4.5.1
+
   '@hono/zod-validator@0.2.2(hono@4.5.1)(zod@3.23.8)':
     dependencies:
       hono: 4.5.1
@@ -752,6 +772,10 @@ snapshots:
   hasown@2.0.2:
     dependencies:
       function-bind: 1.1.2
+
+  hono-rate-limiter@0.4.0(hono@4.5.1):
+    dependencies:
+      hono: 4.5.1
 
   hono@4.5.1: {}
 
