@@ -6,8 +6,6 @@ https://create-music-link.trpfrog.workers.dev
 
 ## API
 
-### GET /v1/tweet
-
 ### POST /v1
 
 #### Request
@@ -36,6 +34,40 @@ $ curl -X POST \
 
 {"url":"https://lynkify.in/song/distortion/57318564"}
 ```
+
+### POST /v1/tweet
+
+#### Request
+
+```json
+{
+  "url": "<Spotify or Apple Music link>"
+}
+```
+
+#### Response
+
+```json
+{
+  "intentUrl": "https://x.com/intent/tweet?text=<Tweet text>",
+  "tweetText": "<Tweet text>"
+}
+```
+
+### GET /v1/tweet
+
+#### Request
+
+- Set query parameter `url` to the Spotify or Apple Music link.
+- Set form parameter `url` to the Spotify or Apple Music link.
+
+#### Response
+
+- Redirect to the Twitter intent page.
+
+#### Demo page
+
+https://create-music-link.trpfrog.workers.dev/
 
 ## Recipes
 
