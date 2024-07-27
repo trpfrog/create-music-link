@@ -1,7 +1,7 @@
 import { Hono } from "hono"
-import { factory } from "./factory"
 import { css, Style } from "hono/css"
 import { jsxRenderer } from "hono/jsx-renderer"
+import { html } from "hono/html"
 
 export const app = new Hono()
   .get(jsxRenderer(({ children }) => {
@@ -72,19 +72,32 @@ export const app = new Hono()
       cursor: pointer;
       margin-left: 3px;
     `
+    const tweetFnDeclaration = html`
+      <script>
+        function tweet() {
+          const btn = document.getElementById("tweet-button");
+          btn.textContent = "Fetching...";
+          btn.disabled = true;
+          btn.style.background = "#ddd";
+        }
+      </script>
+    `
 
     return c.render(
       <>
         <h1 class={h1}>Tweet #nowplaying</h1>
         <div class={wrapper}>
-          <form form action="/v1/tweet" method="get">
+          {tweetFnDeclaration}
+          <form form action="/v1/tweet" method="get" onsubmit="tweet()">
             <label class={label}>
               <div>
                 Spotify or Apple Music URL
               </div>
               <input class={textBox} type="text" name="url" />
             </label>
-            <button class={button} type="submit">Tweet</button>
+            <button class={button} type="submit" id="tweet-button">
+              Tweet
+            </button>
           </form>
         </div>
       </>
