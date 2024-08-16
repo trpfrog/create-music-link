@@ -59,6 +59,7 @@ $ curl -X POST \
 #### Request
 
 - Set query parameter `url` to the Spotify or Apple Music link.
+  - `https://create-music-link.trpfrog.workers.dev/v1/tweet?url=<Spotify or Apple Music link>`
 - Set form parameter `url` to the Spotify or Apple Music link.
 
 #### Response
