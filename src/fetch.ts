@@ -8,7 +8,9 @@ export async function fetchLynkifyUrl(musicProviderUrl: string) {
   if (res.ok) {
     return res.url;
   } else {
-    throw new Error("Failed to fetch lynkify url");
+    throw new Error("Failed to fetch lynkify url", {
+      cause: res,
+    });
   }
 }
 

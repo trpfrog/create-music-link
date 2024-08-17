@@ -8,13 +8,17 @@ import {
 } from "../fetch";
 
 export async function fetchTrackInfo(c: Context<AppType>, reqUrl: string) {
-  const lynkifyUrl = await fetchLynkifyUrl(reqUrl).catch(() => {
-    throw new HTTPException(500, { message: "Failed to fetch lynkify url" });
+  const lynkifyUrl = await fetchLynkifyUrl(reqUrl).catch((e) => {
+    throw new HTTPException(500, {
+      cause: e,
+      message: "Failed to fetch lynkify url",
+    });
   });
 
   const spotifyId = await fetchSpotifyTrackIdFromLykinfyUrl(lynkifyUrl).catch(
-    () => {
+    (e) => {
       throw new HTTPException(500, {
+        cause: e,
         message: `Failed to extract Spotify track ID from Lynkify site\n(${lynkifyUrl})`,
       });
     }
@@ -27,6 +31,7 @@ export async function fetchTrackInfo(c: Context<AppType>, reqUrl: string) {
   const track = await fetchSpotifyTrack(spotifyClient, spotifyId, "JP").catch(
     (e) => {
       throw new HTTPException(500, {
+        cause: e,
         message: `Failed to fetch Spotify track (Spotify id: ${spotifyId})`,
       });
     }
