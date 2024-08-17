@@ -34,18 +34,17 @@ export async function fetchLynkifyUrl(musicProviderUrl: string) {
       cause: res,
     });
   }
-
-  const { songType, songName, songId } = await res
-    .text()
-    .then(parseLynkifyResponse)
-    .catch((e) => {
-      throw new Error("Failed to parse Lynkify response", {
-        cause: e,
-      });
+  try {
+    const { songType, songName, songId } = await res
+      .text()
+      .then(parseLynkifyResponse);
+    const url = `https://lynkify.in/${songType}/${songName}/${songId}`;
+    return url;
+  } catch (e) {
+    throw new Error("Failed to parse Lynkify response", {
+      cause: e,
     });
-
-  const url = `https://lynkify.in/${songType}/${songName}/${songId}`;
-  return url;
+  }
 }
 
 export async function fetchSpotifyTrackIdFromLykinfyUrl(lynkifyUrl: string) {
