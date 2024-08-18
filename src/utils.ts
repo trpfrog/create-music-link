@@ -9,3 +9,12 @@ export function joinWithAnd(arr: string[]) {
       return `${arr.slice(0, -1).join(", ")} and ${arr.at(-1)}`;
   }
 }
+
+export function fillTemplate(
+  template: string,
+  values: Record<string, string | number>
+) {
+  return template.replace(/\$\{(\w+)\}/g, (_, key) =>
+    key in values ? values[key].toString() : `\${${key}}`
+  );
+}
