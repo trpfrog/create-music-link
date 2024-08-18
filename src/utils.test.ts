@@ -1,5 +1,5 @@
 import { describe, test, expect } from "vitest";
-import { joinWithAnd, fillTemplate } from "./utils";
+import { joinWithAnd, fillTemplate, extractAllCaptureGroups } from "./utils";
 
 describe("joinWithAnd", () => {
   test.each([
@@ -65,5 +65,27 @@ describe("fillTemplate", () => {
   ];
   test.each(testCases)("$name", ({ template, values, expected }) => {
     expect(fillTemplate(template, values)).toBe(expected);
+  });
+});
+
+describe("extractAllCaptureGroups", () => {
+  test.each([
+    { re: /(\d+)/g, str: "123 456 789", expected: [["123"], ["456"], ["789"]] },
+    {
+      re: /(\w+)/g,
+      str: "Alpha Bravo Charlie",
+      expected: [["Alpha"], ["Bravo"], ["Charlie"]],
+    },
+    {
+      re: /(\d+)(\w+)/g,
+      str: "123Alpha 456Bravo 789Charlie",
+      expected: [
+        ["123", "Alpha"],
+        ["456", "Bravo"],
+        ["789", "Charlie"],
+      ],
+    },
+  ])("should extract all capture groups #%#", ({ re, str, expected }) => {
+    expect(extractAllCaptureGroups(re, str)).toEqual(expected);
   });
 });

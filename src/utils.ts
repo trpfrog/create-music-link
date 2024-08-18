@@ -18,3 +18,12 @@ export function fillTemplate(
     key in values ? values[key].toString() : `\${${key}}`
   );
 }
+
+export function extractAllCaptureGroups(re: RegExp, str: string): string[][] {
+  const result: string[][] = [];
+  let match: RegExpExecArray | null;
+  while ((match = re.exec(str)) !== null) {
+    result.push(match.slice(1));
+  }
+  return result;
+}
