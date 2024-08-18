@@ -1,5 +1,6 @@
 name = "create-music-link"
 compatibility_date = "2024-07-26"
+compatibility_flags = ["nodejs_compat"]
 
 # The rate limiting API is in open beta.
 [[unsafe.bindings]]
