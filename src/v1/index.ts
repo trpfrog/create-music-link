@@ -1,5 +1,5 @@
 import { extractRequestedUrl } from "../middlewares/urlExtractor";
-import { fetchLynkifyUrl } from "../fetch";
+import { createHonoNextActionIdRepo, fetchLynkifyUrl } from "../fetch";
 import { factory } from "../factory";
 import {
   createNowPlaygroundTweetUrl,
@@ -12,8 +12,9 @@ const app = factory.createApp();
 app.use("/", ...extractRequestedUrl("json", "query"));
 app.post("/", async (c) => {
   const reqUrl = c.get("url");
+  const repo = createHonoNextActionIdRepo(c);
   try {
-    const url = await fetchLynkifyUrl(reqUrl);
+    const url = await fetchLynkifyUrl(reqUrl, repo);
     return c.json({ url });
   } catch (e) {
     return c.json(

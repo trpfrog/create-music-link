@@ -7,6 +7,7 @@ export type AppType = {
   };
   Bindings: {
     RATE_LIMITER: RateLimitBinding;
+    KV: KVNamespace<"current-next-action">;
     SPOTIFY_CLIENT_ID: string;
     SPOTIFY_CLIENT_SECRET: string;
   };

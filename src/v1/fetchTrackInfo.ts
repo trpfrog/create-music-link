@@ -2,13 +2,15 @@ import { Context } from "hono";
 import { AppType } from "../factory";
 import { HTTPException } from "hono/http-exception";
 import {
+  createHonoNextActionIdRepo,
   fetchLynkifyUrl,
   fetchSpotifyTrack,
   fetchSpotifyTrackIdFromLykinfyUrl,
 } from "../fetch";
 
 export async function fetchTrackInfo(c: Context<AppType>, reqUrl: string) {
-  const lynkifyUrl = await fetchLynkifyUrl(reqUrl).catch((e) => {
+  const repo = createHonoNextActionIdRepo(c);
+  const lynkifyUrl = await fetchLynkifyUrl(reqUrl, repo).catch((e) => {
     throw new HTTPException(500, {
       cause: e,
       message: "Failed to fetch lynkify url",

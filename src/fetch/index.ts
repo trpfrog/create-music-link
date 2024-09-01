@@ -1,27 +1,44 @@
 import { Market, SpotifyApi, Track } from "@spotify/web-api-ts-sdk";
 import { marketSchema } from "../spotify/schema";
+import { Context } from "hono";
 
 import {
   createLynkifyUrlFetcher,
   fetchAllNextActionIdsInLynkify,
 } from "./fetcher";
+import type { AppType } from "../factory";
+import { Repository } from "../types";
 
-let currentNextActionId = "";
-const failedNextActionIds = new Set<string>();
+export function createHonoNextActionIdRepo(
+  c: Context<AppType>
+): Repository<string> {
+  return {
+    get: async () => {
+      const value = await c.env.KV.get("current-next-action");
+      return value;
+    },
+    set: async (value: string) => {
+      await c.env.KV.put("current-next-action", value);
+    },
+  };
+}
 
 /**
  * Find a valid nextActionId while fetching the Lynkify URL.
  * @param musicProviderUrl
  * @returns
  */
-async function findValidNextActionIdWhileFetchingUrl(musicProviderUrl: string) {
+async function findValidNextActionIdWhileFetchingUrl(
+  musicProviderUrl: string,
+  nextActionIdRepo: Repository<string>
+) {
   console.log("Find valid nextActionId");
-
   // Fetch nextActionId candidates and filter out failed ones
-  const nextActionIdCandidates = await fetchAllNextActionIdsInLynkify().then(
-    (candidates) => candidates.filter((c) => !failedNextActionIds.has(c))
-  );
+  const nextActionIdCandidates = await fetchAllNextActionIdsInLynkify();
 
+  console.log(
+    `Found ${nextActionIdCandidates.length} candidates: ${nextActionIdCandidates}`
+  );
   for (const nextActionId of nextActionIdCandidates) {
     // Update nextActionId to the candidate
     console.log(`Trying nextActionId: ${nextActionId}`);
@@ -31,11 +48,11 @@ async function findValidNextActionIdWhileFetchingUrl(musicProviderUrl: string) {
       // Try fetching the Lynkify URL with the candidate nextActionId
       const url = await fetchLynkifyUrl(musicProviderUrl);
       // if no error is thrown, the nextActionId is valid
-      currentNextActionId = nextActionId;
+      await nextActionIdRepo.set(nextActionId);
       console.log(`nextActionId ${nextActionId} is valid`);
       return url;
     } catch (e) {
-      failedNextActionIds.add(nextActionId);
+      console.error(e);
     }
   }
 
@@ -48,23 +65,28 @@ async function findValidNextActionIdWhileFetchingUrl(musicProviderUrl: string) {
  * @param musicProviderUrl
  * @returns
  */
-export async function fetchLynkifyUrl(musicProviderUrl: string) {
-  const fetchLynkifyUrl = createLynkifyUrlFetcher(currentNextActionId);
+export async function fetchLynkifyUrl(
+  musicProviderUrl: string,
+  nextActionIdRepo: Repository<string>
+) {
+  const nextActionId = await nextActionIdRepo.get();
+
+  // If nextActionId is not set, find a valid one
+  if (!nextActionId) {
+    return await findValidNextActionIdWhileFetchingUrl(
+      musicProviderUrl,
+      nextActionIdRepo
+    );
+  }
+
   try {
+    const fetchLynkifyUrl = createLynkifyUrlFetcher(nextActionId);
     return await fetchLynkifyUrl(musicProviderUrl);
-  } catch (e) {
-    // Update nextActionId if return type is not text/x-component
-    if (
-      e instanceof Error &&
-      e.cause instanceof Response &&
-      e.cause.ok &&
-      e.cause.headers.get("content-type") !== "text/x-component"
-    ) {
-      const url = await findValidNextActionIdWhileFetchingUrl(musicProviderUrl);
-      return url;
-    } else {
-      throw e;
-    }
+  } catch {
+    return await findValidNextActionIdWhileFetchingUrl(
+      musicProviderUrl,
+      nextActionIdRepo
+    );
   }
 }
 
