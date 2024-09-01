@@ -1,5 +1,6 @@
 import { parseLynkifyResponse, createServerActionsFetcher } from "./utils";
 import { extractAllCaptureGroups } from "../utils";
+import { Repository } from "../types";
 
 /**
  * Create a function that fetches the Lynkify URL for a given music provider URL.
@@ -54,7 +55,7 @@ export async function fetchAllNextActionIdsInLynkify(): Promise<string[]> {
   const scriptPaths = await fetch("https://lynkify.in/create-link")
     .then((r) => r.text())
     .then((html) =>
-      extractAllCaptureGroups(/<script src="(.*?)"/g, html).flat(),
+      extractAllCaptureGroups(/<script src="(.*?)"/g, html).flat()
     );
 
   // Fetch all scripts and extract next-action values
@@ -65,9 +66,46 @@ export async function fetchAllNextActionIdsInLynkify(): Promise<string[]> {
     return fetch(`https://lynkify.in${src}`)
       .then((r) => r.text())
       .then((script) =>
-        extractAllCaptureGroups(nextActionIdRegex, script).flat(),
+        extractAllCaptureGroups(nextActionIdRegex, script).flat()
       );
   });
 
   return Promise.all(promises).then((e) => e.flat());
+}
+
+/**
+ * Find a valid nextActionId while fetching the Lynkify URL.
+ * @param musicProviderUrl
+ * @returns
+ */
+export async function findValidNextActionIdWhileFetchingUrl(
+  musicProviderUrl: string,
+  nextActionIdRepo: Repository<string>
+) {
+  console.log("Find valid nextActionId");
+  // Fetch nextActionId candidates and filter out failed ones
+  const nextActionIdCandidates = await fetchAllNextActionIdsInLynkify();
+
+  console.log(
+    `Found ${nextActionIdCandidates.length} candidates: ${nextActionIdCandidates}`
+  );
+  for (const nextActionId of nextActionIdCandidates) {
+    // Update nextActionId to the candidate
+    console.log(`Trying nextActionId: ${nextActionId}`);
+    const fetchLynkifyUrl = createLynkifyUrlFetcher(nextActionId);
+
+    try {
+      // Try fetching the Lynkify URL with the candidate nextActionId
+      const url = await fetchLynkifyUrl(musicProviderUrl);
+      // if no error is thrown, the nextActionId is valid
+      await nextActionIdRepo.set(nextActionId);
+      console.log(`nextActionId ${nextActionId} is valid`);
+      return url;
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  // If no valid nextActionId is found, throw an error
+  throw new Error("Failed to revalidate nextActionId");
 }

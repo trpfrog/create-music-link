@@ -1,64 +1,13 @@
 import { Market, SpotifyApi, Track } from "@spotify/web-api-ts-sdk";
 import { marketSchema } from "../spotify/schema";
-import { Context } from "hono";
 
 import {
   createLynkifyUrlFetcher,
-  fetchAllNextActionIdsInLynkify,
+  findValidNextActionIdWhileFetchingUrl,
 } from "./fetcher";
-import type { AppType } from "../factory";
 import { Repository } from "../types";
 
-export function createHonoNextActionIdRepo(
-  c: Context<AppType>
-): Repository<string> {
-  return {
-    get: async () => {
-      const value = await c.env.KV.get("current-next-action");
-      return value;
-    },
-    set: async (value: string) => {
-      await c.env.KV.put("current-next-action", value);
-    },
-  };
-}
-
-/**
- * Find a valid nextActionId while fetching the Lynkify URL.
- * @param musicProviderUrl
- * @returns
- */
-async function findValidNextActionIdWhileFetchingUrl(
-  musicProviderUrl: string,
-  nextActionIdRepo: Repository<string>
-) {
-  console.log("Find valid nextActionId");
-  // Fetch nextActionId candidates and filter out failed ones
-  const nextActionIdCandidates = await fetchAllNextActionIdsInLynkify();
-
-  console.log(
-    `Found ${nextActionIdCandidates.length} candidates: ${nextActionIdCandidates}`
-  );
-  for (const nextActionId of nextActionIdCandidates) {
-    // Update nextActionId to the candidate
-    console.log(`Trying nextActionId: ${nextActionId}`);
-    const fetchLynkifyUrl = createLynkifyUrlFetcher(nextActionId);
-
-    try {
-      // Try fetching the Lynkify URL with the candidate nextActionId
-      const url = await fetchLynkifyUrl(musicProviderUrl);
-      // if no error is thrown, the nextActionId is valid
-      await nextActionIdRepo.set(nextActionId);
-      console.log(`nextActionId ${nextActionId} is valid`);
-      return url;
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
-  // If no valid nextActionId is found, throw an error
-  throw new Error("Failed to revalidate nextActionId");
-}
+export { createHonoNextActionIdRepo } from "./utils";
 
 /**
  * Fetch Lynkify URL

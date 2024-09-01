@@ -1,4 +1,7 @@
+import { Context } from "hono";
 import { z } from "zod";
+import { AppType } from "../factory";
+import { Repository } from "../types";
 
 const lynkifyResponseSchema = z.object({
   songType: z.string(),
@@ -24,4 +27,18 @@ export function createServerActionsFetcher(to: {
       },
       body: JSON.stringify(args),
     });
+}
+
+export function createHonoNextActionIdRepo(
+  c: Context<AppType>
+): Repository<string> {
+  return {
+    get: async () => {
+      const value = await c.env.KV.get("current-next-action");
+      return value;
+    },
+    set: async (value: string) => {
+      await c.env.KV.put("current-next-action", value);
+    },
+  };
 }
