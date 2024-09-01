@@ -54,20 +54,20 @@ export async function fetchAllNextActionIdsInLynkify(): Promise<string[]> {
   const scriptPaths = await fetch("https://lynkify.in/create-link")
     .then((r) => r.text())
     .then((html) =>
-      extractAllCaptureGroups(/<script src="(.*?)"/g, html).flat()
+      extractAllCaptureGroups(/<script src="(.*?)"/g, html).flat(),
     );
 
   // Fetch all scripts and extract next-action values
-  return Promise.all(
-    scriptPaths.map(async (src) => {
-      // next-action is a SHA-1 hash
-      const nextActionIdRegex = /"([a-f0-9]{40})"/g;
-      // Fetch the script and extract next-action values
-      return fetch(`https://lynkify.in${src}`)
-        .then((r) => r.text())
-        .then((script) =>
-          extractAllCaptureGroups(nextActionIdRegex, script).flat()
-        );
-    })
-  ).then((e) => e.flat());
+  const promises = scriptPaths.map(async (src) => {
+    // next-action is a SHA-1 hash
+    const nextActionIdRegex = /"([a-f0-9]{40})"/g;
+    // Fetch the script and extract next-action values
+    return fetch(`https://lynkify.in${src}`)
+      .then((r) => r.text())
+      .then((script) =>
+        extractAllCaptureGroups(nextActionIdRegex, script).flat(),
+      );
+  });
+
+  return Promise.all(promises).then((e) => e.flat());
 }
