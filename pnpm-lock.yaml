@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@hono-rate-limiter/cloudflare':
-        specifier: ^0.2.0
-        version: 0.2.0(@cloudflare/workers-types@4.20240821.1)(hono@4.5.10)
+        specifier: ^0.1.2
+        version: 0.1.2(hono@4.5.10)
       '@hono/zod-validator':
         specifier: ^0.2.2
         version: 0.2.2(hono@4.5.10)(zod@3.23.8)
@@ -378,10 +378,9 @@ packages:
     resolution: {integrity: sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA==}
     engines: {node: '>=14'}
 
-  '@hono-rate-limiter/cloudflare@0.2.0':
-    resolution: {integrity: sha512-mOBk9EshKiShN5zQpDN146TlW2PghQEI0Uvw9Fx1LeFwCUOmgDR9IoXIq6zTk9qgqQWTlco+PoAKGzzaOU3xTw==}
+  '@hono-rate-limiter/cloudflare@0.1.2':
+    resolution: {integrity: sha512-s0eTlzY+7AI6oHoToAVkRiCZmS9hxnuVe1f+4zQ2iq+wsoWNOla+dIrdwFezNeBwuMBRFnhoNSw8DeNNijAydw==}
     peerDependencies:
-      '@cloudflare/workers-types': ^4.20240529.0
       hono: ^4.4.8
 
   '@hono/zod-validator@0.2.2':
@@ -1275,9 +1274,8 @@ snapshots:
 
   '@fastify/busboy@2.1.1': {}
 
-  '@hono-rate-limiter/cloudflare@0.2.0(@cloudflare/workers-types@4.20240821.1)(hono@4.5.10)':
+  '@hono-rate-limiter/cloudflare@0.1.2(hono@4.5.10)':
     dependencies:
-      '@cloudflare/workers-types': 4.20240821.1
       hono: 4.5.10
 
   '@hono/zod-validator@0.2.2(hono@4.5.10)(zod@3.23.8)':
