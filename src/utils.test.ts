@@ -1,5 +1,11 @@
-import { describe, test, expect } from "vitest";
-import { joinWithAnd, fillTemplate, extractAllCaptureGroups } from "./utils";
+import { describe, test, expect, vi } from "vitest";
+import {
+  joinWithAnd,
+  fillTemplate,
+  extractAllCaptureGroups,
+  withCallLimit,
+} from "./utils";
+import { except } from "hono/combine";
 
 describe("joinWithAnd", () => {
   test.each([
@@ -87,5 +93,25 @@ describe("extractAllCaptureGroups", () => {
     },
   ])("should extract all capture groups #%#", ({ re, str, expected }) => {
     expect(extractAllCaptureGroups(re, str)).toEqual(expected);
+  });
+});
+
+describe("withCallLimit", () => {
+  test("should throw an error when called more than the limit", () => {
+    const fn = vi.fn();
+    const safeFn = withCallLimit(fn, 3);
+
+    expect(() => safeFn()).not.toThrow();
+    expect(() => safeFn()).not.toThrow();
+    expect(() => safeFn()).not.toThrow();
+    expect(() => safeFn()).toThrow();
+  });
+
+  test("should pass arguments to the original function", () => {
+    const fn = vi.fn();
+    const safeFn = withCallLimit(fn, 3);
+
+    safeFn(1, 2, 3);
+    expect(fn).toHaveBeenCalledWith(1, 2, 3);
   });
 });

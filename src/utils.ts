@@ -27,3 +27,17 @@ export function extractAllCaptureGroups(re: RegExp, str: string): string[][] {
   }
   return result;
 }
+
+export function withCallLimit<Args extends unknown[], T>(
+  fn: (...args: Args) => T,
+  maxCalls: number
+) {
+  let calls = 0;
+  return (...args: Args) => {
+    if (calls >= maxCalls) {
+      throw new Error(`Function called more than ${maxCalls} times`);
+    }
+    calls++;
+    return fn(...args);
+  };
+}
