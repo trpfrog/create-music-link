@@ -5,13 +5,12 @@ import {
   extractAllCaptureGroups,
   withCallLimit,
 } from "./utils";
-import { except } from "hono/combine";
 
 describe("joinWithAnd", () => {
   test.each([
-    [["Alpha", "Bravo", "Charlie", "Delta"], "Alpha, Bravo, Charlie and Delta"],
-    [["Alpha", "Bravo", "Charlie"], "Alpha, Bravo and Charlie"],
-    [["Alpha", "Bravo"], "Alpha and Bravo"],
+    [["Alpha", "Bravo", "Charlie", "Delta"], "Alpha, Bravo, Charlie & Delta"],
+    [["Alpha", "Bravo", "Charlie"], "Alpha, Bravo & Charlie"],
+    [["Alpha", "Bravo"], "Alpha & Bravo"],
     [["Alpha"], "Alpha"],
     [[], ""],
   ])("should join as %s => '%s'", (input, expected) => {
