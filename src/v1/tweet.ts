@@ -26,7 +26,9 @@ export function generateNowPlaygroundTweet(
     trackName: track.name,
     albumName: track.album.name,
     minutes: Math.floor(track.duration_ms / 1000 / 60),
-    seconds: Math.floor((track.duration_ms / 1000) % 60),
+    seconds: Math.floor((track.duration_ms / 1000) % 60)
+      .toString()
+      .padStart(2, "0"),
     url: lynkifyUrl,
     albumInfo: isAlbumInfoRequired ? albumInfo : "",
   });
