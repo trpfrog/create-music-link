@@ -2,6 +2,9 @@ name = "create-music-link"
 compatibility_date = "2024-07-26"
 compatibility_flags = ["nodejs_compat"]
 
+[observability]
+enabled = true
+
 [[kv_namespaces]]
 binding = "KV"
 id = "fd4844a62adf45ab8ec2d3bf9af79f10"
