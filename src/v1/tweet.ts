@@ -20,7 +20,7 @@ export function generateNowPlaygroundTweet(
     artists.toLowerCase() !== albumArtists.toLowerCase() &&
     track.album.name.toLowerCase() !== track.name.toLowerCase();
 
-  return fillTemplate(template, {
+  const filled = fillTemplate(template, {
     artists,
     albumArtists,
     trackName: track.name,
@@ -32,6 +32,12 @@ export function generateNowPlaygroundTweet(
     url: lynkifyUrl,
     albumInfo: isAlbumInfoRequired ? albumInfo : "",
   });
+
+  // Remove trailing whitespaces
+  return filled
+    .split("\n")
+    .map((e) => e.trimEnd())
+    .join("\n");
 }
 
 export function createNowPlaygroundTweetUrl(track: Track, lynkifyUrl: string) {
