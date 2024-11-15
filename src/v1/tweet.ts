@@ -10,16 +10,25 @@ export function generateNowPlaygroundTweet(
 ) {
   const template =
     options?.template ||
-    "#nowplaying ${artists} - ${trackName} (${albumArtists} - ${albumName})\n${url}";
+    "#nowplaying ${artists} - ${trackName} ${albumInfo}\n${url}";
+
+  const artists = joinWithAnd(track.artists.map((a) => a.name));
+  const albumArtists = joinWithAnd(track.album.artists.map((a) => a.name));
+  const albumInfo = `(${albumArtists} - ${track.album.name})`;
+
+  const isAlbumInfoRequired =
+    artists.toLowerCase() !== albumArtists.toLowerCase() &&
+    track.album.name.toLowerCase() !== track.name.toLowerCase();
 
   return fillTemplate(template, {
-    artists: joinWithAnd(track.artists.map((a) => a.name)),
-    albumArtists: joinWithAnd(track.album.artists.map((a) => a.name)),
+    artists,
+    albumArtists,
     trackName: track.name,
     albumName: track.album.name,
     minutes: Math.floor(track.duration_ms / 1000 / 60),
     seconds: Math.floor((track.duration_ms / 1000) % 60),
     url: lynkifyUrl,
+    albumInfo: isAlbumInfoRequired ? albumInfo : "",
   });
 }
 
